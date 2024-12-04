@@ -1,0 +1,1 @@
+//sayfa ve navigasyon işlemleri.

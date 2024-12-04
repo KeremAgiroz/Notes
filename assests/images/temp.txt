@@ -1,0 +1,1 @@
+//uygulamaya gömmek istenilen görseller eklenicek.
