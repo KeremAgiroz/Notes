@@ -2,7 +2,7 @@
 
   
 
-![İstinye Üniversitesi](https://www.unitededucation.com/linklogoch/istinye-university-logo.png)
+![İstinye Üniversitesi](![(image.png)https://www.unitededucation.com/linklogoch/istinye-university-logo.png](file:///C:/Users/HP/Downloads/DALL%C2%B7E%202024-12-04%2015.56.52%20-%20Design%20an%20app%20icon%20featuring%20a%20feathered%20quill%20pen.%20The%20icon%20should%20have%20a%20classic%20and%20elegant%20style,%20showcasing%20a%20detailed%20feather%20in%20soft,%20natural%20c.webp))
 
   
 
