@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../screens/loading_screen.dart';
 import '../screens/home_screen.dart';
+import '../screens/profil_screen.dart';
+import '../screens/search_screen.dart';
 
 // Router yapılandırması
 final router = GoRouter(
