@@ -8,7 +8,7 @@
 
 ## Proje Hakkında
 
-[Projenin kısa tanımı ve amacı buraya yazılacak]
+[Kullanıcılar telefon ekranlarında aktif olarak duran widget sayesinde yaklaşan görevlerini kolayca hallederek sade ve anlaşılır bir arayüz ile notlarını tutmalarına olanak sağlar.]
 
   
 
