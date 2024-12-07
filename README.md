@@ -21,7 +21,7 @@ Uygulama ayrıca arama fonksiyonu ve yardımcı bir yardım ekranı sunarak, kul
 ## Ekibimiz
 
 -  **Danışman:**  
-[https://github.com/keyvanarasteh](Keyvan Arasteh)
+[https://github.com/keyvanarasteh] (Keyvan Arasteh)
 
 
 -  **Takım Üyeleri:**
@@ -128,10 +128,17 @@ lib/
   
 
 ## Ekran Görüntüleri
-
-[Uygulama ekran görüntüleri buraya eklenecek]
-
-  
+[https://github.com/KeremAgiroz/Notes/blob/main/GirisEkrani.png?raw=true]
+[(https://github.com/KeremAgiroz/Notes/blob/main/AnaSayfa.png?raw=true)]
+[https://github.com/KeremAgiroz/Notes/blob/main/AramaEkrani.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/AyarlarEkrani.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/HedefEkleme.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/Hedeflerim.png?raw=true]  
+[https://github.com/KeremAgiroz/Notes/blob/main/HedeflerimKutusuRenkSecimi.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/NotEkleme.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/ProfilEkrani.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/Uygulama%20Arka%20Plani%20Renk%20Se%C3%A7imi.png?raw=true]
+[https://github.com/KeremAgiroz/Notes/blob/main/YanMenu.png?raw=true]
 
 ## Projeye Katkı Sağlama
 
