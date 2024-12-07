@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/screens/goals_screen.dart';
 import 'package:flutter_app/screens/profil_screen.dart';
 import 'package:flutter_app/screens/search_screen.dart';
 import 'package:flutter_app/screens/setting_screen.dart';
@@ -142,80 +143,126 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Container(
         color: _backgroundColor, // Ana sayfa arka plan rengi
-        child: notes.isEmpty
-            ? const Center(
-                child: Text(
-                  'Henüz bir not yok!',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: notes.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    color: notes[index]['backgroundColor'],
-                    margin: const EdgeInsets.only(bottom: 16),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+        child: Column(
+          children: [
+            // Hedeflerim kutusu
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GoalsScreen(),
+                  ),
+                );
+              },
+              child: Container(
+                width: 500,
+                height: 150,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
                     ),
-                    child: ListTile(
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          notes[index]['text'],
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: notes[index]['textColor'],
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    'Hedeflerim',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Notlar Listesi
+            Expanded(
+              child: notes.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Henüz bir not yok!',
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: notes.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          color: notes[index]['backgroundColor'],
+                          margin: const EdgeInsets.only(bottom: 16),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                      ),
-                      subtitle: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Text(
-                          notes[index]['timestamp'] != null
-                              ? DateFormat('yyyy-MM-dd HH:mm:ss')
-                                  .format(notes[index]['timestamp'])
-                              : 'Tarih bulunamadı',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: notes[index]['textColor'], // Tarih rengi
-                          ),
-                        ),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          CupertinoIcons.delete,
-                          color: notes[index]['textColor'], // Çöp kutusu rengi
-                        ),
-                        onPressed: () {
-                          _showDeleteConfirmation(context, index);
-                        },
-                      ),
-                      onTap: () async {
-                        final updatedNote = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NoteScreen(
-                              initialText: notes[index]['text'],
-                              initialTextColor: notes[index]['textColor'],
-                              initialBackgroundColor: notes[index]
-                                  ['backgroundColor'],
+                          child: ListTile(
+                            title: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Text(
+                                notes[index]['text'],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: notes[index]['textColor'],
+                                ),
+                              ),
                             ),
+                            subtitle: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                notes[index]['timestamp'] != null
+                                    ? DateFormat('yyyy-MM-dd HH:mm:ss')
+                                        .format(notes[index]['timestamp'])
+                                    : 'Tarih bulunamadı',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: notes[index]['textColor'],
+                                ),
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: Icon(
+                                CupertinoIcons.delete,
+                                color: notes[index]['textColor'],
+                              ),
+                              onPressed: () {
+                                _showDeleteConfirmation(context, index);
+                              },
+                            ),
+                            onTap: () async {
+                              final updatedNote = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NoteScreen(
+                                    initialText: notes[index]['text'],
+                                    initialTextColor: notes[index]['textColor'],
+                                    initialBackgroundColor: notes[index]
+                                        ['backgroundColor'],
+                                  ),
+                                ),
+                              );
+                              if (updatedNote != null) {
+                                setState(() {
+                                  notes[index] = updatedNote;
+                                });
+                              }
+                            },
                           ),
                         );
-                        if (updatedNote != null) {
-                          setState(() {
-                            notes[index] = updatedNote;
-                          });
-                        }
                       },
                     ),
-                  );
-                },
-              ),
+            ),
+          ],
+        ),
       ),
     );
   }
