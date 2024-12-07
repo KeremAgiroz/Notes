@@ -1,108 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Shared Preferences importu
 
 class GoalsScreen extends StatefulWidget {
-  const GoalsScreen({super.key});
+  const GoalsScreen({Key? key}) : super(key: key);
 
   @override
   _GoalsScreenState createState() => _GoalsScreenState();
 }
 
 class _GoalsScreenState extends State<GoalsScreen> {
-  List<Map<String, dynamic>> _goals = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadGoals(); // Uygulama başladığında hedefleri yükle
-  }
-
-  // SharedPreferences'tan hedefleri yükleme
-  Future<void> _loadGoals() async {
-    final prefs = await SharedPreferences.getInstance();
-    final goalsList =
-        prefs.getStringList('goals') ?? []; // 'goals' key'inden veriyi al
-
-    setState(() {
-      _goals = goalsList.map((goal) {
-        final parts = goal.split('|'); // Hedef ve tarih arasını ayır
-        return {
-          'goal': parts[0],
-          'dateTime': DateTime.parse(parts[1]),
-        };
-      }).toList();
-    });
-  }
-
-  // Yeni hedef kaydetme
-  Future<void> _saveGoal(Map<String, dynamic> goal) async {
-    final prefs = await SharedPreferences.getInstance();
-    final goalsList = prefs.getStringList('goals') ?? [];
-
-    goalsList.add(
-        '${goal['goal']}|${goal['dateTime']}'); // Hedef ve tarihi birleştir
-
-    await prefs.setStringList(
-        'goals', goalsList); // Güncellenmiş listeyi kaydet
-
-    setState(() {
-      _goals.add(goal); // Listeyi ekrana yansıt
-    });
-  }
+  final List<Map<String, String>> goals = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hedeflerim'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              final newGoal = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NewGoalScreen(),
-                ),
-              );
-
-              if (newGoal != null) {
-                _saveGoal(
-                    newGoal); // Hedef kaydedildiğinde veriyi SharedPreferences'a kaydet
-              }
-            },
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: goals.isEmpty
+                ? const Center(
+                    child: Text(
+                      'Henüz bir hedef yok!',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: goals.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(goals[index]['goal'] ?? ''),
+                        subtitle: Text(goals[index]['date'] ?? ''),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: _goals.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-            child: ListTile(
-              title: Text(_goals[index]['goal']),
-              subtitle: Text(
-                'Tarih: ${DateFormat('yyyy-MM-dd').format(_goals[index]['dateTime'])}',
-              ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final newGoal = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddGoalScreen(),
             ),
           );
+          if (newGoal != null) {
+            setState(() {
+              goals.add(newGoal);
+            });
+          }
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-class NewGoalScreen extends StatefulWidget {
-  const NewGoalScreen({super.key});
+class AddGoalScreen extends StatefulWidget {
+  const AddGoalScreen({Key? key}) : super(key: key);
 
   @override
-  _NewGoalScreenState createState() => _NewGoalScreenState();
+  _AddGoalScreenState createState() => _AddGoalScreenState();
 }
 
-class _NewGoalScreenState extends State<NewGoalScreen> {
+class _AddGoalScreenState extends State<AddGoalScreen> {
   final TextEditingController _goalController = TextEditingController();
-  DateTime? _selectedDate;
+  DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -113,63 +79,62 @@ class _NewGoalScreenState extends State<NewGoalScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _goalController,
               decoration: const InputDecoration(
-                labelText: 'Hedefinizi Yazın',
+                labelText: 'Hedefinizi girin',
+                border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Text(_selectedDate == null
-                    ? 'Tarih Seçin'
-                    : 'Seçilen Tarih: ${DateFormat('yyyy-MM-dd').format(_selectedDate!)}'),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.calendar_today),
-                  onPressed: _selectDate,
-                ),
-              ],
+            const SizedBox(height: 16),
+            TextButton.icon(
+              onPressed: () async {
+                final pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                );
+                if (pickedDate != null) {
+                  setState(() {
+                    selectedDate = pickedDate;
+                  });
+                }
+              },
+              icon: const Icon(Icons.calendar_today),
+              label: Text(
+                selectedDate != null
+                    ? DateFormat('yyyy-MM-dd').format(selectedDate!)
+                    : 'Tarih Seçin',
+              ),
             ),
-            const Spacer(),
+            const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _saveGoal,
+              onPressed: () {
+                if (_goalController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Lütfen bir hedef girin!')),
+                  );
+                  return;
+                }
+                if (selectedDate == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Lütfen bir tarih seçin!')),
+                  );
+                  return;
+                }
+                Navigator.pop(context, {
+                  'goal': _goalController.text,
+                  'date': DateFormat('yyyy-MM-dd').format(selectedDate!),
+                });
+              },
               child: const Text('Kaydet'),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _selectDate() async {
-    final selected = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (selected != null && selected != _selectedDate) {
-      setState(() {
-        _selectedDate = selected;
-      });
-    }
-  }
-
-  void _saveGoal() {
-    if (_goalController.text.isEmpty || _selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Lütfen hedef ve tarih girin')),
-      );
-      return;
-    }
-
-    Navigator.pop(context, {
-      'goal': _goalController.text,
-      'dateTime': _selectedDate,
-    });
   }
 }
