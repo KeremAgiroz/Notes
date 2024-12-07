@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, dynamic>> notes = []; // Notları liste şeklinde sakla
   Color _backgroundColor = Colors.white;
+  Color _goalBoxColor = Colors.blue; // Hedeflerim kutusunun rengi
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +138,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
+              ListTile(
+                leading: const Icon(CupertinoIcons.flag),
+                title: const Text('Hedeflerim Kutusu Rengi'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BackgroundColorScreen(
+                        currentColor: _goalBoxColor, // Hedefler kutusu rengi
+                        onColorSelected: (Color color) {
+                          setState(() {
+                            _goalBoxColor =
+                                color; // Hedefler kutusunun rengini değiştir
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -159,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 500,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: _goalBoxColor, // Burada _goalBoxColor kullanılıyor
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -264,6 +285,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showHelpDialog(context),
+        child: const Icon(Icons.help_outline),
+        backgroundColor: const Color.fromARGB(255, 251, 251, 252),
+      ),
     );
   }
 
@@ -298,6 +324,57 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
+  // Yardım dialog'u
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Uygulama Özellikleri'),
+          content: SingleChildScrollView(
+            child: const Text(
+              '1. Not Ekleme ve Düzenleme:\n'
+              'Yeni Not Ekleme: Uygulamanın sağ üst köşesindeki "+" (artı) simgesine tıklayarak yeni bir not ekleyebilirsiniz. Bu, kullanıcıyı not ekleme ekranına yönlendirir.\n'
+              'Not Düzenleme: Eklenen veya var olan bir notu düzenlemek için, not listesinde bir not üzerine tıklayarak, notu değiştirebilirsiniz. Bu işlem notun içeriğini, yazı rengini ve arka plan rengini düzenlemek için yapılır.\n'
+              'Yazı ve Arka Plan Rengi Değiştirme: Notu düzenlerken yazı rengini ve arka plan rengini değiştirebilirsiniz. Bunun için pop-up menüde "Yazı Rengini Seç" ve "Arka Plan Rengini Seç" seçeneklerinden birini seçmeniz yeterli olacaktır.\n'
+              'Not Kaydetme: Not düzenlemeleri tamamlandığında, "check" simgesine tıklayarak kaydedebilirsiniz.\n\n'
+              '2. Not Silme:\n'
+              'Not Silme: Her notun sağ tarafında bir çöp kutusu simgesi bulunur. Bu simgeye tıkladığınızda, notu silmek için bir onay penceresi açılır. Kullanıcı, "Evet" butonuna tıklayarak notu silebilir.\n\n'
+              '3. Notlar Listesi:\n'
+              'Notları Görüntüleme: Ana ekranda, kullanıcı tüm eklenen notları tarih sırasına göre (en yenisi üstte) görüntüleyebilir. Eğer hiçbir not yoksa, ekranda "Henüz bir not yok!" mesajı görüntülenir.\n'
+              'Not Kartları: Her bir not, bir kart içinde görüntülenir. Kartın içinde notun metni, yazı rengi, arka plan rengi ve tarih bilgisi yer alır.\n\n'
+              '4. Arama:\n'
+              'Arama Sayfası: Sağ üst köşedeki "arama" simgesine tıklayarak, notları aramak için arama ekranına yönlendirilebilirsiniz. Arama ekranı, kullanıcıya notlar arasında hızlıca arama yapma imkanı sunar.\n\n'
+              '5. Profil:\n'
+              'Profil Sayfası: Sağ üst köşedeki "profil" simgesine tıklayarak, kullanıcı profil sayfasına erişebilir. Burada, kullanıcı bilgilerini görebilir ve düzenleme yapabilir.\n\n'
+              '6. Ayarlar:\n'
+              'Ayarlar Sayfası: Ana menüde yer alan "Ayarlar" seçeneği ile, uygulamanın ayarlarını değiştirebilirsiniz. Bu sayfa, kullanıcının uygulama ayarlarını yapılandırmasını sağlar.\n\n'
+              '7. Arka Plan Rengi ve Hedef Kutusu Rengi Değiştirme:\n'
+              'Uygulama Arka Planı: Uygulamanın genel arka plan rengini değiştirmek için yan menüden "Uygulama Arka Planı" seçeneğine tıklayarak renk seçebilirsiniz.\n'
+              'Hedeflerim Kutusu Rengi: "Hedeflerim Kutusu Rengi" seçeneği ile, ana sayfadaki hedefler kutusunun rengini değiştirebilirsiniz.\n\n'
+              '8. Hedeflerim Kutusu:\n'
+              'Hedeflerim Kutusuna Gitme: Ana sayfada yer alan "Hedeflerim" kutusuna tıkladığınızda, kişisel hedeflerinizi yönetebileceğiniz "Hedeflerim" ekranına geçiş yapılır.\n\n'
+              '9. Yardım:\n'
+              'Yardım İkonu: Ekranın sağ alt köşesinde bulunan yardım ikonu ile uygulama hakkında bilgi alabilirsiniz. Yardım ekranı, uygulamanın temel özelliklerini kullanıcılara açıklayan bir açıklama içerir.\n\n'
+              '10. Profil Görseli ve Adı:\n'
+              'Profil Görseli: Yan menüde yer alan profil görseli, kullanıcı adına ait bir profil fotoğrafını gösterir.\n'
+              'Kullanıcı Adı: Kullanıcı adına yer verilen bir alan da mevcuttur, burada profil fotoğrafının yanında kullanıcı adı görüntülenir.',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Kapat'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 // Not ekranı
@@ -323,8 +400,8 @@ class _NoteScreenState extends State<NoteScreen> {
   late Color _backgroundColor;
 
   final List<Color> colors = [
-    Colors.purple,
-    Colors.red,
+    Colors.black,
+    Colors.blue,
     Colors.brown,
     Colors.white,
     Colors.blue.shade900,
@@ -336,6 +413,14 @@ class _NoteScreenState extends State<NoteScreen> {
     Colors.orange,
     Colors.blue,
     Colors.teal,
+    Colors.cyan,
+    Colors.indigo,
+    const Color.fromARGB(255, 171, 34, 168),
+    Color.fromARGB(255, 52, 162, 146),
+    Color.fromARGB(255, 207, 165, 13),
+    Color.fromARGB(255, 44, 108, 92),
+    Color.fromARGB(255, 150, 17, 104),
+    Color.fromARGB(255, 95, 8, 33),
   ];
 
   @override
@@ -470,8 +555,8 @@ class BackgroundColorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Color> colors = [
-      Colors.purple,
-      Colors.red,
+      Colors.black,
+      Colors.blue,
       Colors.brown,
       Colors.white,
       Colors.blue.shade900,
@@ -483,6 +568,14 @@ class BackgroundColorScreen extends StatelessWidget {
       Colors.orange,
       Colors.blue,
       Colors.teal,
+      Colors.cyan,
+      Colors.indigo,
+      const Color.fromARGB(255, 171, 34, 168),
+      Color.fromARGB(255, 52, 162, 146),
+      Color.fromARGB(255, 207, 165, 13),
+      Color.fromARGB(255, 44, 108, 92),
+      Color.fromARGB(255, 150, 17, 104),
+      Color.fromARGB(255, 95, 8, 33),
     ];
 
     return Scaffold(

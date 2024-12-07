@@ -9,6 +9,7 @@ class GoalsScreen extends StatefulWidget {
 }
 
 class _GoalsScreenState extends State<GoalsScreen> {
+  // Bellekte hedeflerin tutulduğu liste
   final List<Map<String, String>> goals = [];
 
   @override
@@ -41,12 +42,15 @@ class _GoalsScreenState extends State<GoalsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          // Yeni hedef eklemek için yeni ekrana gidiyoruz
           final newGoal = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const AddGoalScreen(),
             ),
           );
+
+          // Yeni hedef döndüğünde listeye ekliyoruz
           if (newGoal != null) {
             setState(() {
               goals.add(newGoal);
